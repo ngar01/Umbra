@@ -16,10 +16,19 @@ class OnboardingWorkspaceScreen extends ConsumerStatefulWidget {
 class _OnboardingWorkspaceScreenState extends ConsumerState<OnboardingWorkspaceScreen> {
   final _groupNameController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    _groupNameController.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _groupNameController.dispose();
+    super.dispose();
+  }
+
   void _createFirstGroup() {
-    // En Phase 1, on a le repository members mais pas encore de repository
-    // workspace/group dédié — on le posera ici dans la prochaine tranche.
-    // Pour l'instant, on marque juste l'étape comme complète.
     ref.read(onboardingProvider.notifier).markWorkspaceCreated();
     ref.read(onboardingProvider.notifier).markFirstGroupCreated();
     context.go('/dashboard');
