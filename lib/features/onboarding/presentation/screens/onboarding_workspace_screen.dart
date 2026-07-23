@@ -5,6 +5,11 @@ import 'package:uuid/uuid.dart';
 import '../../../../core/design_system/tokens/spacing.dart';
 import '../../../../core/design_system/widgets/buttons.dart';
 import '../providers/onboarding_provider.dart';
+import 'package:uuid/uuid.dart';
+import '../../../members/domain/entities/workspace_entity.dart';
+import '../../../members/domain/entities/group_entity.dart';
+import '../providers/workspace_group_providers.dart';
+import '../../../../core/navigation/current_context_provider.dart';
 
 class OnboardingWorkspaceScreen extends ConsumerStatefulWidget {
   const OnboardingWorkspaceScreen({super.key});
@@ -28,10 +33,34 @@ class _OnboardingWorkspaceScreenState extends ConsumerState<OnboardingWorkspaceS
     super.dispose();
   }
 
-  void _createFirstGroup() {
+  Future<void> _createFirstGroup() async {
+    final workspaceRepo = ref.read(workspaceRepositoryProvider);
+    final groupRepo = ref.read(groupRepositoryProvider);
+    const uuid = Uuid();
+
+    final workspaceId = uuid.v4();
+    final groupId = uuid.v4();
+
+    await workspaceRepo.create(WorkspaceEntity(
+      id: workspaceId,
+      name: '${_groupNameController.text.trim()} — Espace',
+      createdAt: DateTime.now(),
+    ));
+
+    await groupRepo.create(GroupEntity(
+      id: groupId,
+      workspaceId: workspaceId,
+      name: _groupNameController.text.trim(),
+      createdAt: DateTime.now(),
+    ));
+
+    ref.read(currentWorkspaceIdProvider.notifier).state = workspaceId;
+    ref.read(currentGroupIdProvider.notifier).state = groupId;
+
     ref.read(onboardingProvider.notifier).markWorkspaceCreated();
     ref.read(onboardingProvider.notifier).markFirstGroupCreated();
-    context.go('/dashboard');
+
+    if (mounted) context.go('/dashboard');
   }
 
   @override
@@ -60,7 +89,7 @@ class _OnboardingWorkspaceScreenState extends ConsumerState<OnboardingWorkspaceS
                 label: 'Créer mon espace',
                 onPressed: _groupNameController.text.trim().isEmpty
                     ? null
-                    : _createFirstGroup,
+                    : () => _createFirstGroup(),
               ),
             ],
           ),
