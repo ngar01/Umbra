@@ -3,10 +3,13 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/dashboard/presentation/screens/design_system_demo_screen.dart';
+import '../../features/onboarding/presentation/screens/onboarding_account_screen.dart';
+import '../../features/onboarding/presentation/screens/onboarding_intro_screen.dart';
+import '../../features/onboarding/presentation/screens/onboarding_workspace_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/dev/design-system',
+    initialLocation: '/onboarding',
     routes: [
       GoRoute(
         path: '/dashboard',
@@ -19,6 +22,18 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/dev/design-system',
         builder: (context, state) => const DesignSystemDemoScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding',
+        builder: (context, state) => const OnboardingIntroScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/account',
+        builder: (context, state) => const OnboardingAccountScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/workspace',
+        builder: (context, state) => const OnboardingWorkspaceScreen(),
       ),
     ],
   );
