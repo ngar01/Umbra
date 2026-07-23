@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../features/dashboard/presentation/screens/design_system_demo_screen.dart';
+
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/dashboard',
+    initialLocation: '/dev/design-system',
     routes: [
       GoRoute(
         path: '/dashboard',
@@ -13,6 +15,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/dashboard/test',
         builder: (context, state) => const _PlaceholderScreen(title: 'Test'),
+      ),
+      GoRoute(
+        path: '/dev/design-system',
+        builder: (context, state) => const DesignSystemDemoScreen(),
       ),
     ],
   );
