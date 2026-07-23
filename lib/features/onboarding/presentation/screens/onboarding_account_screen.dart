@@ -14,6 +14,18 @@ class _OnboardingAccountScreenState extends State<OnboardingAccountScreen> {
   final _nameController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    _nameController.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
