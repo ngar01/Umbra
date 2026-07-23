@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../../features/dashboard/presentation/screens/design_system_demo_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_account_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_intro_screen.dart';
@@ -13,7 +14,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(
         path: '/dashboard',
-        builder: (context, state) => const _PlaceholderScreen(title: 'Dashboard'),
+        builder: (context, state) => const DashboardScreen(),
       ),
       GoRoute(
         path: '/dashboard/test',
