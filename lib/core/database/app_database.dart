@@ -8,15 +8,16 @@ import 'tables/workspaces_table.dart';
 import 'tables/groups_table.dart';
 import 'tables/members_table.dart';
 import 'tables/reminders_table.dart';
+import 'tables/goals_table.dart';
 
 part 'app_database.g.dart';
 
-@DriftDatabase(tables: [Workspaces, Groups, Members, Reminders])
+@DriftDatabase(tables: [Workspaces, Groups, Members, Reminders, Goals])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -24,6 +25,9 @@ class AppDatabase extends _$AppDatabase {
     onUpgrade: (m, from, to) async {
       if (from < 2) {
         await m.createTable(reminders);
+      }
+      if (from < 3) {
+        await m.createTable(goals);
       }
     },
   );
