@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../tokens/radius.dart';
 import '../tokens/spacing.dart';
+import '../tokens/colors.dart';
 
 class HeroCard extends StatelessWidget {
   final Widget child;
@@ -10,13 +11,19 @@ class HeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: backgroundColor ?? Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(AppRadius.lg),
-        boxShadow: [
+        border: isDark
+            ? Border.all(color: AppColors.borderDark, width: 1)
+            : null,
+        boxShadow: isDark
+            ? null
+            : [
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
             blurRadius: 16,
@@ -37,6 +44,7 @@ class CompactCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.md),
@@ -45,6 +53,9 @@ class CompactCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(AppRadius.md),
+          border: isDark
+              ? Border.all(color: AppColors.borderDark, width: 1)
+              : null,
         ),
         child: child,
       ),
