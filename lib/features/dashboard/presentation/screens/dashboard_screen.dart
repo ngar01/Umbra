@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:umbra/features/goals/domain/entities/goal_entity.dart';
+import 'package:umbra/features/goals/presentation/providers/goal_providers.dart';
 import '../../../../core/design_system/tokens/spacing.dart';
 import '../../../../core/design_system/widgets/cards.dart';
 import '../../../../core/design_system/widgets/buttons.dart';
@@ -9,9 +11,20 @@ import '../providers/reminder_providers.dart';
 import '../../../members/presentation/providers/member_providers.dart';
 
 const List<Map<String, String>> _verses = [
-  {'text': 'Celui qui demeure sous l\'abri du Très-Haut repose à l\'ombre du Tout-Puissant.', 'ref': 'Psaume 91:1'},
-  {'text': 'Car je connais les projets que j\'ai formés sur vous, dit l\'Éternel.', 'ref': 'Jérémie 29:11'},
-  {'text': 'Je puis tout par celui qui me fortifie.', 'ref': 'Philippiens 4:13'},
+  {
+    'text':
+        'Celui qui demeure sous l\'abri du Très-Haut repose à l\'ombre du Tout-Puissant.',
+    'ref': 'Psaume 91:1',
+  },
+  {
+    'text':
+        'Car je connais les projets que j\'ai formés sur vous, dit l\'Éternel.',
+    'ref': 'Jérémie 29:11',
+  },
+  {
+    'text': 'Je puis tout par celui qui me fortifie.',
+    'ref': 'Philippiens 4:13',
+  },
 ];
 
 class DashboardScreen extends ConsumerWidget {
@@ -23,16 +36,21 @@ class DashboardScreen extends ConsumerWidget {
 
     if (groupId == null) {
       return const Scaffold(
-        body: Center(child: Text('Aucun groupe actif — retournez à l\'onboarding.')),
+        body: Center(
+          child: Text('Aucun groupe actif — retournez à l\'onboarding.'),
+        ),
       );
     }
 
-    final dayIndex = DateTime.now().difference(DateTime(2026, 1, 1)).inDays % _verses.length;
+    final dayIndex =
+        DateTime.now().difference(DateTime(2026, 1, 1)).inDays % _verses.length;
     final verse = _verses[dayIndex];
 
     final membersAsync = ref.watch(getMembersUseCaseProvider).call(groupId);
     final callsAsync = ref.watch(callRemindersProvider(groupId));
     final visitsAsync = ref.watch(visitRemindersProvider(groupId));
+
+    final goalsAsync = ref.watch(myGoalsProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Bonjour 👋')),
@@ -44,9 +62,15 @@ class DashboardScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('"${verse['text']}"', style: Theme.of(context).textTheme.bodyLarge),
+                Text(
+                  '"${verse['text']}"',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
                 const SizedBox(height: AppSpacing.xs),
-                Text(verse['ref']!, style: Theme.of(context).textTheme.labelSmall),
+                Text(
+                  verse['ref']!,
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
               ],
             ),
           ),
@@ -59,7 +83,10 @@ class DashboardScreen extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('🙏  Prier aujourd\'hui', style: Theme.of(context).textTheme.titleMedium),
+                    Text(
+                      '🙏  Prier aujourd\'hui',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       count == 0
@@ -70,9 +97,11 @@ class DashboardScreen extends ConsumerWidget {
                     const SizedBox(height: AppSpacing.md),
                     PrimaryButton(
                       label: 'Commencer mon intercession',
-                      onPressed: count == 0 ? null : () {
-                        // Route réelle branchée en Phase 5
-                      },
+                      onPressed: count == 0
+                          ? null
+                          : () {
+                              // Route réelle branchée en Phase 5
+                            },
                     ),
                   ],
                 ),
@@ -116,13 +145,34 @@ class DashboardScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: AppSpacing.lg),
-          Text('Progression de la semaine', style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: AppSpacing.sm),
-          const ProgressBarSoft(value: 0.0),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            'Les objectifs hebdomadaires arrivent avec le discipulat (Phase 4).',
-            style: Theme.of(context).textTheme.labelSmall,
+          goalsAsync.when(
+            data: (goals) {
+              final total = goals.length;
+              final done = goals
+                  .where((g) => g.status == GoalStatus.done)
+                  .length;
+              final progress = total == 0 ? 0.0 : done / total;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Progression de la semaine',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  ProgressBarSoft(value: progress),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    total == 0
+                        ? 'Ajoutez un objectif pour commencer à suivre votre semaine.'
+                        : '$done / $total objectifs accomplis',
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                ],
+              );
+            },
+            loading: () => const SizedBox.shrink(),
+            error: (e, st) => const SizedBox.shrink(),
           ),
         ],
       ),
