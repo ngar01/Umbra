@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:umbra/features/goals/presentation/screens/my_goals_screen.dart';
 
 import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../../features/dashboard/presentation/screens/design_system_demo_screen.dart';
@@ -35,6 +36,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/onboarding/workspace',
         builder: (context, state) => const OnboardingWorkspaceScreen(),
+      ),
+      GoRoute(
+        path: '/goals',
+        builder: (context, state) => const MyGoalsScreen(),
       ),
     ],
   );
