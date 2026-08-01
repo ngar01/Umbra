@@ -9,6 +9,7 @@ class AppTheme {
   static ThemeData get light => ThemeData(
     brightness: Brightness.light,
     scaffoldBackgroundColor: AppColors.surfacePrimaryLight,
+    cardColor: AppColors.surfaceSecondaryLight, // ← la ligne qui manquait
     colorScheme: ColorScheme.light(
       surface: AppColors.surfacePrimaryLight,
       primary: AppColors.accentGold,
@@ -28,6 +29,7 @@ class AppTheme {
   static ThemeData get dark => ThemeData(
     brightness: Brightness.dark,
     scaffoldBackgroundColor: AppColors.surfacePrimaryDark,
+    cardColor: AppColors.surfaceSecondaryDark, // ← la ligne qui manquait
     colorScheme: ColorScheme.dark(
       surface: AppColors.surfacePrimaryDark,
       primary: AppColors.accentGold,
